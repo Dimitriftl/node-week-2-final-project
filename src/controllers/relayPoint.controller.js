@@ -1,5 +1,6 @@
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
+import { xml2json } from '@codask/xml2json'
 
 export const findRelay = async (req, res) => {
   const city = req.query.city
@@ -20,25 +21,11 @@ export const findRelay = async (req, res) => {
       </soap:Body>
     </soap:Envelope>
   `
-  const response = await axios.post('https://api.mondialrelay.com/Web_Services.asmx', soapString,
-    {
-      headers: {
-        "Content-Type": "text/xml; charssset=utf-8",
-        SOAPAction:
-          "http://www.mondialrelay.fr/webservice/WSI3_PointRelais_Recherche",
-      },
-    }
-  )
-  
-  try {
-    res.send({ ok: true, msg: response.data, city: city })
-  } catch (error) {
-    console.error(error.message)
-    res.status(500).send({
-      ok: false,
-      msg: 'Something went wrong',
-      error: error.message
-    })
-  }
 
+  try {
+    const response = await axios.post('https://api.mondialrelay.com/Web_Services.asmx', soapString, { headers: { 'Content-Type': 'text/xml; charssset=utf-8', SOAPAction: 'http://www.mondialrelay.fr/webservice/WSI3_PointRelais_Recherche' }})
+    res.send({ ok: true, msg: xml2json(`${response.data}`), city: city })
+  } catch (error) {
+    res.status(500).send({ ok: false, msg: 'Something went wrong', error: error.message })
+  }
 }
