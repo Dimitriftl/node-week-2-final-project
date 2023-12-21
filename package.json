@@ -22,7 +22,7 @@
     "start": "nodemon --watch src/index.js"
   },
   "dependencies": {
-    "@codask/xml2json": "^0.0.1",
+    "@codask/xml2json": "^0.0.2",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
