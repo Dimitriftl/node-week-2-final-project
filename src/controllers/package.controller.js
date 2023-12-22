@@ -3,36 +3,72 @@ import CryptoJS from "crypto-js";
 import { xml2json } from "@codask/xml2json";
 
 export const createTag = async (req, res) => {
-  const city = "nanterre";
   const enseigne = "BDTEST13";
   const modeCol = "CCC";
   const modeLiv = "LCC";
-  // expedition settings
+  // Expedition settings
   const expreLangage = "FR";
-  const expeAd1 = "MR John Doe";
-  const expeAd3 = "Rue des poitier";
-  const expeVille = "nanterre";
-  const expeCP = "92000";
+  const expeAd1 = "MR DE LA ROCHE";
+  const expeAd3 = "252 AVENUE DE DUNKERQUE";
+  const expeVille = "LILLE";
+  const expeCP = "59160";
   const expePays = "FR";
-  const expeTell = "+33666666666";
-  // destination settings
+  const expeTell = "+33123456789";
+  // Destination settings
   const destLangage = "FR";
-  const destAd1 = " MME Michelle West";
-  const destAd3 = " Rue des choses";
-  const destville = "nanterre";
-  const destCP = "92000";
+  const destAd1 = "MR DE LA ROCHE";
+  const destAd3 = "2 RUE MAX LINDER";
+  const destville = "NANTES";
+  const destCP = "44100";
   const DestPays = "FR";
-  const weigth = "10";
-  const nbPackages = "01";
-  const CRTValue = "0000070";
-  const pays = "FR";
+  const DestTel1 =  "+33201234568";
+  const weigth = "100";
+  const nbPackages = "1";
+  const CRTValue = "0";
+  const COLRelPays = "FR";
+  const COLRel = "324234";
+  const LIVRelPays = "FR";
+  const LIVRel = "324234";
   const privateK = "PrivateK";
-  const text = "some";
+  const text = "SOME";
+  
+  const variablesSansEspaces = Object.values({
+    enseigne,
+    modeCol,
+    modeLiv,
+    expreLangage,
+    expeAd1,
+    expeAd3,
+    expeVille,
+    expeCP,
+    expePays,
+    expeTell,
+    destLangage,
+    destAd1,
+    destAd3,
+    destville,
+    destCP,
+    DestPays,
+    DestTel1,
+    weigth,
+    nbPackages,
+    CRTValue,
+    COLRelPays,
+    COLRel,
+    LIVRelPays,
+    LIVRel,
+    privateK,
+  }).map((variable) => variable.replace(/\s/g, ""));
 
-  const hashString = enseigne + pays + city + privateK;
-  const hash = CryptoJS.MD5(hashString)
+  const hashStringWithoutSpaces = variablesSansEspaces.join("");
+
+  console.log(hashStringWithoutSpaces, "hashStringWithoutSpaces");
+
+  const hash = CryptoJS.MD5(hashStringWithoutSpaces)
     .toString(CryptoJS.enc.Hex)
     .toUpperCase();
+
+  console.log(hash);
 
   const soapString = `<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -54,11 +90,14 @@ export const createTag = async (req, res) => {
           <Dest_Ville>${destville}</Dest_Ville>
           <Dest_CP>${destCP}</Dest_CP>
           <Dest_Pays>${DestPays}</Dest_Pays>
+          <Dest_Tel1>${DestTel1}</Dest_Tel1>
           <Poids>${weigth}</Poids>
           <NbColis>${nbPackages}</NbColis>
           <CRT_Valeur>${CRTValue}</CRT_Valeur>
-          <Pays>${pays}</Pays>
-          <Ville>${city}</Ville>
+          <COL_Rel_Pays>${COLRelPays}</COL_Rel_Pays>
+          <COL_Rel>${COLRel}</COL_Rel>
+          <LIV_Rel_Pays>${LIVRelPays}</LIV_Rel_Pays>
+          <LIV_Rel>${LIVRel}</LIV_Rel>
           <Security>${hash}</Security>
           <Texte>${text}</Texte>
         </WSI2_CreationEtiquette>
@@ -78,7 +117,7 @@ export const createTag = async (req, res) => {
         },
       }
     );
-    res.send({ ok: true, msg: xml2json(`${response.data}`), city: city });
+    res.send({ ok: true, msg: xml2json(`${response.data}`) });
   } catch (error) {
     res
       .status(500)
