@@ -1,7 +1,7 @@
-import axios from "axios";
-// import Tag from "../models/package.model.js";
-import CryptoJS from "crypto-js";
-import { xml2json } from "@codask/xml2json";
+import axios from "axios"
+import { Tag } from '../models/index.js'
+import CryptoJS from "crypto-js"
+import { xml2json } from "@codask/xml2json"
 
 export const createTag = async (req, res) => {
   const enseigne = "BDTEST13";
@@ -113,14 +113,13 @@ export const createTag = async (req, res) => {
         },
       }
     );
+    const jsonResponse = xml2json(`${response.data}`)['soap:Envelope']['soap:Body']['WSI2_CreationEtiquetteResponse']['WSI2_CreationEtiquetteResult']['URL_Etiquette']
     // const newTag = await Tag.create(req.body);
     // res.send({ ok: true, data: newTag, msg: "New tag created" });
     // res.send({ ok: true, data: newTag, msg: "New tag created" });
-
-    res.send({ ok: true, msg: xml2json(`${response.data}`) });
+    const tag = await Tag.create({ link: jsonResponse})
+    res.send({ ok: true, data: tag, msg: "New tag created" })
   } catch (error) {
-    res
-      .status(500)
-      .send({ ok: false, msg: "Something went wrong", error: error.message });
+    res.status(500).send({ ok: false, msg: "Something went wrong", error: error.message });
   }
-};
+}

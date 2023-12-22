@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose'
 
 const TagSchema = new mongoose.Schema({
-  link: String
-});
+  link: { type: String, required: true }
+})
 
-module.exports = mongoose.model("Tag", TagSchema);
+export const Tag = mongoose.model('Tag', TagSchema)
