@@ -31,7 +31,6 @@ export const createTag = async (req, res) => {
   const LIVRelPays = "FR";
   const LIVRel = "324234";
   const privateK = "PrivateK";
-  const text = "SOME";
 
   const variablesSansEspaces = Object.values({
     enseigne,
@@ -107,16 +106,13 @@ export const createTag = async (req, res) => {
       soapString,
       {
         headers: {
-          "Content-Type": "text/xml; charssset=utf-8",
+          "Content-Type": "text/xml; charset=utf-8",
           SOAPAction:
             "http://www.mondialrelay.fr/webservice/WSI2_CreationEtiquette",
         },
       }
     );
     const jsonResponse = xml2json(`${response.data}`)['soap:Envelope']['soap:Body']['WSI2_CreationEtiquetteResponse']['WSI2_CreationEtiquetteResult']['URL_Etiquette']
-    // const newTag = await Tag.create(req.body);
-    // res.send({ ok: true, data: newTag, msg: "New tag created" });
-    // res.send({ ok: true, data: newTag, msg: "New tag created" });
     const tag = await Tag.create({ link: jsonResponse})
     res.send({ ok: true, data: tag, msg: "New tag created" })
   } catch (error) {

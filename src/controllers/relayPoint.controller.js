@@ -46,7 +46,7 @@ export const findRelay = async (req, res) => {
   `
 
   try {
-    const response = await axios.post('https://api.mondialrelay.com/Web_Services.asmx', soapString, { headers: { 'Content-Type': 'text/xml; charssset=utf-8', SOAPAction: 'http://www.mondialrelay.fr/webservice/WSI3_PointRelais_Recherche' }})
+    const response = await axios.post('https://api.mondialrelay.com/Web_Services.asmx', soapString, { headers: { 'Content-Type': 'text/xml; charset=utf-8', SOAPAction: 'http://www.mondialrelay.fr/webservice/WSI3_PointRelais_Recherche' }})
     const jsonResponse = xml2json(`${response.data}`)['soap:Envelope']['soap:Body']['WSI3_PointRelais_RechercheResponse']['WSI3_PointRelais_RechercheResult']['PointsRelais']['PointRelais_Details']
     const msg = jsonResponse.map(item => {
       return {
@@ -70,7 +70,7 @@ export const findRelay = async (req, res) => {
         imageUrl: item.URL_Photo
       }
     })
-    res.send({ ok: true, msg, city: city })
+    res.send({ ok: true, msg, city })
   } catch (error) {
     res.status(500).send({ ok: false, msg: 'Something went wrong', error: error.message })
   }
