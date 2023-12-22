@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { logger } from './logger.js'
+// import dotenv from 'dotenv'
 
 export const connectMongodb = async () => {
   const connection = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWD}@cluster0.mzvon6w.mongodb.net/mondial-relay`

@@ -1,4 +1,5 @@
 import axios from "axios";
+// import Tag from "../models/package.model.js";
 import CryptoJS from "crypto-js";
 import { xml2json } from "@codask/xml2json";
 
@@ -21,7 +22,7 @@ export const createTag = async (req, res) => {
   const destville = "NANTES";
   const destCP = "44100";
   const DestPays = "FR";
-  const DestTel1 =  "+33201234568";
+  const DestTel1 = "+33201234568";
   const weigth = "100";
   const nbPackages = "1";
   const CRTValue = "0";
@@ -31,7 +32,7 @@ export const createTag = async (req, res) => {
   const LIVRel = "324234";
   const privateK = "PrivateK";
   const text = "SOME";
-  
+
   const variablesSansEspaces = Object.values({
     enseigne,
     modeCol,
@@ -62,13 +63,9 @@ export const createTag = async (req, res) => {
 
   const hashStringWithoutSpaces = variablesSansEspaces.join("");
 
-  console.log(hashStringWithoutSpaces, "hashStringWithoutSpaces");
-
   const hash = CryptoJS.MD5(hashStringWithoutSpaces)
     .toString(CryptoJS.enc.Hex)
     .toUpperCase();
-
-  console.log(hash);
 
   const soapString = `<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -98,8 +95,7 @@ export const createTag = async (req, res) => {
           <COL_Rel>${COLRel}</COL_Rel>
           <LIV_Rel_Pays>${LIVRelPays}</LIV_Rel_Pays>
           <LIV_Rel>${LIVRel}</LIV_Rel>
-          <Security>${hash}</Security>
-          <Texte>${text}</Texte>
+          <Security>4116E63C8D2DF39268D7FFA0051235C7</Security>
         </WSI2_CreationEtiquette>
       </soap:Body>
     </soap:Envelope>
@@ -117,6 +113,10 @@ export const createTag = async (req, res) => {
         },
       }
     );
+    // const newTag = await Tag.create(req.body);
+    // res.send({ ok: true, data: newTag, msg: "New tag created" });
+    // res.send({ ok: true, data: newTag, msg: "New tag created" });
+
     res.send({ ok: true, msg: xml2json(`${response.data}`) });
   } catch (error) {
     res
